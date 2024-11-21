@@ -1,0 +1,99 @@
+OPEN MP:
+sudo apt update
+sudo apt install build-essential
+nano hello.c:
+#include <omp.h>s
+#include <stdio.h>
+
+int main() {
+   
+    
+        printf("Hello from thread %d\n", omp_get_thread_num());
+    
+    return 0;
+}
+gcc -fopenmp -o hello hello.c
+./hello
+
+
+MPI:
+sudo apt install python3
+sudo apt install -y -qq mpich
+sudo apt install python3-pip
+sudo apt install python3-mpi4py
+nano hello.py
+from mpi4py import MPI
+comm =MPI.COMM_WORLD
+rank=comm.Get_rank()
+size=comm.Get_size()
+print(f"Hello from process {rank} of {size}")
+mpirun -n 4 python/python3 hello.py
+
+
+SPARK:
+sudo apt install default-jdk
+java -version
+scala -version
+sudo apt-get install scala
+touch this -https://dlcdn.apache.org/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz
+cd Downloads
+ls
+tar -xvf spark-3.5.3-bin-hadoop3.tgz
+sudo su
+cd Downloads
+mv spark-3.5.3-bin-hadoop3 /usr/local/spark
+cd
+nano .bashrc
+
+export PATH=$PATH:/usr/local/spark/bin
+
+source .bashrc
+spark-shell
+
+// Load the input text file
+val textFile = sc.textFile("text.txt")
+
+// Split the lines into words, count them, and display the result
+val wordCounts = textFile.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey(_ + _)
+
+// Print the results
+wordCounts.collect().foreach(println)
+
+
+DOCKER:
+sudo apt update
+sudo apt upgrade
+sudo apt install docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
+docker --version
+
+mkdir docker-python-app
+cd docker-python-app
+echo 'print("Sum of numbers from 1 to 10 is:", sum(range(1, 11)))' > sum_numbers.py
+nano Dockerfile
+
+# Use the official Python image from Docker Hub
+FROM python:3.9-slim
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy the current directory contents into the container at /usr/src/app
+COPY . .
+
+# Command to run the Python program
+CMD ["python", "./sum_numbers.py"]
+
+
+sudo docker build -t my-python-app .
+sudo docker run my-python-app
+
+
+
+
+
+
+
+
+
